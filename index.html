@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Text to Braille Converter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
     :root {
         --input-height: 40px;
@@ -21,13 +22,15 @@
         font-family: Arial, sans-serif;
         padding: 20px;
         background-color: var(--color-light);
+        
     }
 
     input {
         width: 300px;
         height: var(--input-height);
-        margin-bottom: 10px;
-        font-size: var(--font-size);
+        margin-bottom: 15px;
+        margin-top: 40px;
+        font-size: 19px;
         padding: 10px;
         border: none;
         border-radius: 5px;
@@ -40,17 +43,19 @@
     }
 
     button {
-        width: 100px;
+        width: auto;
 
         height: var(--input-height);
-        font-size: 20px;
+        font-size: 19px;
         color: var(--color-light);
         background-color: var(--color-primary);
         border: none;
         border-radius: 5px;
-        margin-left: 10px;
+        padding: 5px;
+        margin: 10px;
         cursor: pointer;
         transition: background-color var(--transition-duration);
+        margin-bottom: 40px;
     }
 
     button:hover {
@@ -59,15 +64,36 @@
         border: 1px solid var(--color-primary);
     }
     span.s {
-        /* background-color: var(--color-dark); */
+        background-color: var(--color-light);
         color: var(--color-dark);
         border-bottom: 3px solid green;
-        /* border-radius: 5px; */
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        margin: 10px;
     }
-    p {
+    #result {
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        border-radius: 5px;
         font-size: var(--font-size);
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+    }
+    .title {
+        font-size: 30px;
+        margin-bottom: 20px;
+    }
+    .button-group {
+        display: flex;
     }
 </style>
+
     <script>
         var braille_mapping = {
 
@@ -192,6 +218,9 @@
 
 function text_to_braille() {
     var text = document.getElementById('text').value.toLowerCase();  // 转换为小写
+    if (text === '') {
+        return; // 如果text为空，就跳出函数
+    }
     var words = text.split(' ');
     console.log(words);
     var braille_text = '';
@@ -244,19 +273,34 @@ function text_to_braille() {
     }
 
     var braille_text_div = '';
-    for (var i = 0; i < braille_text.length; i++) {
-        var className = braille_text[i] !== '⠀' ? ' s' : '';
-        braille_text_div += '<span class="' + className + '">' + braille_text[i] + '</span>';
+    console.log(braille_text);
+    braille_word_split=braille_text.split('⠀');
+    braille_word_split.pop();
+    console.log(braille_word_split);
+    for (var i = 0; i < braille_word_split.length; i++) {
+        var className = 's';
+        braille_text_div += '<span class="' + className + '">' + braille_word_split[i] + '</span>';
     }
     document.getElementById('result').innerHTML = braille_text_div;
     //document.getElementById('result').innerText = braille_text.trim();
 }
-   
+function clearInput() {
+        document.getElementById('text').value = '';
+    }
     </script>
 </head>
 <body>
-    <input type="text" id="text" placeholder="Enter text here">
-    <button onclick="text_to_braille()">Translate</button>
-    <p id="result"></p>
+    <div class="box">
+        <div class="title">布莱叶二级盲文</div>
+        
+        <input type="text" id="text" placeholder="请输入文本...">
+        <div class="button-group">
+            <button onclick="clearInput()">清除文本</button>
+            <button onclick="text_to_braille()">点击此处翻译</button>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    
 </body>
 </html>
